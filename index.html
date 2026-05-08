@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>电商PS设计学堂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="navbar-root"></div>
+  <main id="app-root"></main>
+  <div id="toast-root"></div>
+
+  <div id="page-loader" class="page-loader">
+    <div class="loader-inner">
+      <div class="loader-logo">PS</div>
+      <div class="loader-bar"><div class="loader-fill"></div></div>
+      <div class="loader-text">电商PS设计学堂</div>
+    </div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- 数据层 -->
+  <script src="js/supabase.js"></script>
+  <script src="js/data/chapter1.js"></script>
+  <script src="js/data/chapter2.js"></script>
+  <script src="js/data/chapter3.js"></script>
+  <script src="js/data/chapter4.js"></script>
+  <script src="js/data/chapter5.js"></script>
+  <script src="js/data/quizzes.js"></script>
+
+  <!-- 组件层 -->
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/navbar.js"></script>
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/progress.js"></script>
+
+  <!-- 功能层 -->
+  <script src="js/auth.js"></script>
+
+  <!-- 页面层 -->
+  <script src="js/pages/login.js"></script>
+  <script src="js/pages/register.js"></script>
+  <script src="js/pages/home.js"></script>
+  <script src="js/pages/course.js"></script>
+  <script src="js/pages/lesson.js"></script>
+  <script src="js/pages/quiz.js"></script>
+  <script src="js/pages/camp.js"></script>
+  <script src="js/pages/admin.js"></script>
+
+  <!-- 主入口 -->
+  <script src="js/app.js"></script>
+</body>
+</html>
