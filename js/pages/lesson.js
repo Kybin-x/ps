@@ -2,6 +2,14 @@
 // pages/lesson.js - 课时详情页
 // ============================================
 
+// 图片加载失败的统一处理函数（避免内联onerror转义问题）
+function imgFallback(el, icon, label) {
+  var wrap = el.parentElement;
+  if (wrap) {
+    wrap.innerHTML = '<div class="img-placeholder"><div class="img-icon">' + icon + '</div><span>' + label + '</span></div>';
+  }
+}
+
 function renderLessonPage(params) {
   const chapterId = params.chapter;
   const lessonId = params.lesson;
@@ -20,13 +28,9 @@ function renderLessonPage(params) {
   const allLessonsDone = chapter.lessons.every(l => App.isLessonCompleted(l.id));
   const isQuizPassed = App.isQuizPassed(chapterId);
 
-  // 渲染内容块
   const contentHtml = renderLessonContent(lesson);
-
-  // 渲染实战练习
   const practiceHtml = lesson.practice ? renderPractice(lesson.practice) : '';
 
-  // 下一步按钮
   let nextBtnHtml = '';
   if (isLastLesson && !isQuizPassed) {
     nextBtnHtml = `
@@ -46,6 +50,9 @@ function renderLessonPage(params) {
   }
 
   const sidebar = SidebarComponent.render(lessonId, chapterId);
+  const chIdx = App.courseData.indexOf(chapter);
+  const tagClass = ['tag-ch1','tag-ch2','tag-ch3','tag-ch4','tag-ch5'][chIdx] || 'tag-ch1';
+
   const content = `
     <div class="lesson-header">
       <div class="lesson-breadcrumb">
@@ -57,7 +64,7 @@ function renderLessonPage(params) {
       </div>
       <h1 class="lesson-title">${lesson.title}</h1>
       <div class="lesson-meta">
-        <span class="badge ${['tag-ch1','tag-ch2','tag-ch3','tag-ch4','tag-ch5'][App.courseData.indexOf(chapter)]}">${chapter.title}</span>
+        <span class="badge ${tagClass}">${chapter.title}</span>
         <span style="font-size:13px;color:var(--text3)">⏱ 约 ${lesson.duration || '20分钟'}</span>
         ${isCompleted ? '<span class="badge badge-green">✅ 已完成</span>' : ''}
       </div>
@@ -96,11 +103,11 @@ function renderLessonPage(params) {
   renderWithSidebar(sidebar, content);
 }
 
-// 渲染课时内容块（兼容两种格式）
-// 格式A: lesson.sections = [{ icon, title, text, steps, tips, keypoints }]  ← chapter1-3
-// 格式B: lesson.steps = [{ title, desc, img, imgAlt }] + lesson.keyOps = [...] ← chapter4-5
+// ============================================
+// 渲染课时内容（兼容 sections 和 steps 两种格式）
+// ============================================
 function renderLessonContent(lesson) {
-  // 格式A：有 sections
+  // 格式A：有 sections（chapter1-3）
   if (lesson.sections && lesson.sections.length) {
     let output = lesson.sections.map(section => {
       let html = `<div class="content-section">`;
@@ -139,7 +146,6 @@ function renderLessonContent(lesson) {
       return html;
     }).join('');
 
-    // lesson 级别的 keyOps（chapter2/3 格式）
     if (lesson.keyOps && lesson.keyOps.length) {
       output += `<div class="content-section">`;
       output += `<h2 class="section-title"><span class="section-icon">⌨️</span>常用操作速查</h2>`;
@@ -159,7 +165,7 @@ function renderLessonContent(lesson) {
     return output;
   }
 
-  // 格式B：直接有 steps（chapter4/5 格式）
+  // 格式B：直接有 steps（chapter4-5）
   if (lesson.steps && lesson.steps.length) {
     let html = `<div class="content-section">`;
     html += `<h2 class="section-title"><span class="section-icon">📖</span>课程内容</h2>`;
@@ -167,7 +173,6 @@ function renderLessonContent(lesson) {
       html += renderStepBlock(step, i);
     });
 
-    // keyOps（常用操作）
     if (lesson.keyOps && lesson.keyOps.length) {
       html += `<div style="margin-top:20px"><h3 style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text2)">⌨️ 常用操作速查</h3>`;
       html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">`;
@@ -190,8 +195,20 @@ function renderLessonContent(lesson) {
   return '';
 }
 
-// 渲染单个步骤块
+// ============================================
+// 渲染单个步骤块（图片用 imgFallback 函数，避免转义问题）
+// ============================================
 function renderStepBlock(step, i) {
+  const safeTitle = (step.title || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const imgLabel = '操作截图：' + safeTitle;
+
+  let imgHtml = '';
+  if (step.img) {
+    imgHtml = `<div class="step-img"><img src="${step.img}" alt="${step.imgAlt || step.title}" onerror="imgFallback(this,'🖼️','${imgLabel}')" /></div>`;
+  } else {
+    imgHtml = `<div class="step-img"><div class="img-placeholder"><div class="img-icon">🖼️</div><span>${imgLabel}</span></div></div>`;
+  }
+
   return `
     <div class="step-block">
       <div class="step-num">${i + 1}</div>
@@ -200,24 +217,14 @@ function renderStepBlock(step, i) {
         <div class="step-desc">${step.desc || step.text || ''}</div>
         ${step.tip ? `<div class="key-tip" style="margin-top:12px"><span class="tip-icon">💡</span><span>${step.tip}</span></div>` : ''}
         ${step.shortcut ? `<div style="margin-top:8px;font-size:13px;color:var(--text3)">快捷键：<span class="kbd">${step.shortcut}</span></div>` : ''}
-        ${step.img ? `
-          <div class="step-img">
-            <img src="${step.img}" alt="${step.imgAlt || step.title}" onerror="this.parentElement.innerHTML='<div class=\\"img-placeholder\\"><div class=\\"img-icon\\">🖼️</div><span>操作截图：${step.title}</span></div>'" />
-          </div>` : `
-          <div class="step-img">
-            <div class="img-placeholder">
-              <div class="img-icon">🖼️</div>
-              <span>操作截图：${step.title}</span>
-            </div>
-          </div>`}
+        ${imgHtml}
       </div>
     </div>`;
 }
 
-// 渲染实战练习
+// ============================================
 // 渲染实战练习（兼容两种数据格式）
-// 格式A: { title, desc, materials, requirements, hints, resultImg, note }  ← chapter1
-// 格式B: { task, hints, refImg, refAlt }  ← chapter2-5
+// ============================================
 function renderPractice(practice) {
   const isTaskFormat = !practice.title && practice.task;
   const title = practice.title || '实战练习';
@@ -226,8 +233,15 @@ function renderPractice(practice) {
   const requirements = practice.requirements || [];
   const hints = practice.hints || [];
   const resultImg = practice.resultImg || practice.refImg || '';
-  const resultAlt = practice.refAlt || '参考效果图';
+  const resultAlt = (practice.refAlt || '参考效果图').replace(/'/g, '&#39;');
   const note = practice.note || '';
+
+  let refImgHtml = '';
+  if (resultImg) {
+    refImgHtml = `<img src="${resultImg}" alt="${resultAlt}" onerror="imgFallback(this,'🎨','${resultAlt}')" />`;
+  } else {
+    refImgHtml = `<div class="img-placeholder"><div style="font-size:36px">🎨</div><span>${resultAlt}</span></div>`;
+  }
 
   return `
     <div class="practice-section">
@@ -274,11 +288,7 @@ function renderPractice(practice) {
       </div>
 
       <div id="ptab-result" class="practice-content">
-        <div class="practice-img-wrap">
-          ${resultImg
-            ? `<img src="${resultImg}" alt="${resultAlt}" onerror="this.parentElement.innerHTML='<div class=\\"img-placeholder\\"><div style=\\"font-size:36px\\">🎨</div><span>${resultAlt}</span></div>'" />`
-            : `<div class="img-placeholder"><div style="font-size:36px">🎨</div><span>${resultAlt}</span></div>`}
-        </div>
+        <div class="practice-img-wrap">${refImgHtml}</div>
         ${note ? `<p style="margin-top:12px;font-size:13px;color:var(--text3)">💬 ${note}</p>` : ''}
       </div>
     </div>`;
@@ -305,7 +315,6 @@ async function markComplete(chapterId, lessonId) {
     return;
   }
 
-  // 更新本地进度
   const existing = App.progress.find(p => p.lesson_id === lessonId);
   if (existing) {
     existing.completed = true;
@@ -314,7 +323,6 @@ async function markComplete(chapterId, lessonId) {
   }
 
   Toast.success('🎉 打卡成功！继续加油！');
-  // 重新渲染
   renderLessonPage({ chapter: chapterId, lesson: lessonId });
 }
 
