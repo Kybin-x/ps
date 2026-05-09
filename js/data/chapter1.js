@@ -28,27 +28,27 @@ const CHAPTER1_DATA = {
               title: '菜单栏：PS的"总控台"',
               desc: '最上面一排就是菜单栏，文件、编辑、图像、图层……这些都在这里。新建文件用「文件」，调整颜色用「图像」，记住这几个最常用的就够了。',
               tip: '电商设计最常用的菜单：文件（新建/存储）、图像（调整颜色）、图层（操作图层）、窗口（调出面板）',
-              img: 'img/ch1/l1-menubar.png'
+              img: 'img/ch1/l1-menubar.jpg'
             },
             {
               title: '工具栏：左边这一列"武器库"',
               desc: '左边这一列是工具栏，移动工具（V）、选框工具（M）、套索工具（L）、文字工具（T）……每个工具右下角有小三角，说明还有隐藏工具，长按就能看到。',
               tip: '记住这4个核心工具快捷键：V（移动）、M（选框）、T（文字）、B（画笔），用得飞起！',
               shortcut: 'V / M / T / B',
-              img: 'img/ch1/l1-toolbar.png'
+              img: 'img/ch1/l1-toolbar.jpg'
             },
             {
               title: '画布区域：中间这块就是你的"画纸"',
               desc: '中间那块灰色区域里面的矩形就是画布，也就是你实际在设计的东西。画布外面的灰色区域不会被打印/导出，可以把临时素材放那里。',
               tip: '按住空格键变成手型工具，拖动画布；Ctrl+0让画布填满屏幕，Ctrl+1是100%显示',
               shortcut: 'Space+拖动 / Ctrl+0 / Ctrl+1',
-              img: 'img/ch1/l1-canvas.png'
+              img: 'img/ch1/l1-canvas.jpg'
             },
             {
               title: '面板区域：右边这堆"参考书"',
               desc: '右边默认显示图层面板、颜色面板、属性面板等。图层面板是你最好的朋友，几乎每次操作都用到它。面板不见了，去菜单「窗口」里找就行。',
               tip: '如果界面乱掉了：菜单「窗口」→「工作区」→「复位基本功能」，一秒回到默认！',
-              img: 'img/ch1/l1-panels.png'
+              img: 'img/ch1/l1-panels.jpg'
             }
           ],
           tips: [
@@ -74,7 +74,7 @@ const CHAPTER1_DATA = {
           '布局满意后，点「窗口」→「工作区」→「新建工作区」，命名为"电商设计"保存',
           '以后工作区乱了，点「窗口」→「工作区」→「复位电商设计」就恢复了'
         ],
-        resultImg: 'img/ch1/l1-practice-result.png',
+        resultImg: 'img/ch1/l1-practice-result.jpg',
         note: '每个人屏幕尺寸不同，工作区布局不必一模一样，找到自己觉得顺手的就好！'
       }
     },
@@ -99,19 +99,19 @@ const CHAPTER1_DATA = {
               desc: '按Ctrl+N（Mac是Cmd+N），或点菜单「文件」→「新建」，弹出新建文件对话框。PS CC 2017以上版本界面有更新，左边有预设模板，右边是自定义参数，我们用右边自定义的。',
               shortcut: 'Ctrl+N',
               tip: 'PS CC版本的新建对话框里有很多预设，找"打印"和"web"类别里有常用尺寸参考',
-              img: 'img/ch1/l2-newfile.png'
+              img: 'img/ch1/l2-newfile.jpg'
             },
             {
               title: '电商必备尺寸清单，背下来！',
               desc: '淘宝/天猫主图：800×800px；京东主图：800×800px；淘宝PC端Banner：950×150px；全屏轮播图：1920×600px；手机端商品详情页：750px宽（高度不限）；电商海报：1000×1400px（竖版）。',
               tip: '分辨率：网络展示用72dpi，印刷品用300dpi。电商设计99%的情况用72dpi就够了！',
-              img: 'img/ch1/l2-sizes.png'
+              img: 'img/ch1/l2-sizes.jpg'
             },
             {
               title: '颜色模式选哪个',
               desc: '电商设计（屏幕展示）统一选RGB颜色模式；要印刷的物料（展架、宣传册、名片）选CMYK。色彩深度选8位就好，16位文件太大没必要。',
               tip: 'RGB的颜色比CMYK更鲜艳，做完设计后别转成CMYK，不然颜色会变暗、变灰',
-              img: 'img/ch1/l2-colormode.png'
+              img: 'img/ch1/l2-colormode.jpg'
             }
           ],
           keypoints: [
@@ -140,7 +140,7 @@ const CHAPTER1_DATA = {
           '三个文件都建好后，按Ctrl+Shift+S（另存为）保存成.psd格式',
           '命名规范：主图-800x800.psd / banner-1920x600.psd / 详情页-750px.psd'
         ],
-        resultImg: 'img/ch1/l2-practice-result.png',
+        resultImg: 'img/ch1/l2-practice-result.jpg',
         note: 'PSD是PS专属格式，保留所有图层和编辑信息，以后修改直接开PSD，非常重要！'
       }
     },
@@ -164,28 +164,28 @@ const CHAPTER1_DATA = {
               title: '图层面板在哪里',
               desc: '右边面板区找到"图层"面板（如果没有，菜单「窗口」→「图层」）。这里显示当前文件所有图层，最上面的图层在画面最前面，最下面通常是背景图层。',
               tip: '图层面板底部有一排图标：填充色、图层样式、蒙版、新建组、新建图层、删除……这些后面都会用到',
-              img: 'img/ch1/l3-layers.png'
+              img: 'img/ch1/l3-layers.jpg'
             },
             {
               title: '新建图层——每个元素一个图层',
               desc: '做每个新元素前，先新建一个图层，然后在新图层上操作——这是专业设计师的习惯。点图层面板底部的"+"，或按Ctrl+Shift+N新建图层。',
               shortcut: 'Ctrl+Shift+N',
               tip: '从现在起养成习惯：每个元素放独立图层，绝对不要把所有东西堆在同一个图层上！',
-              img: 'img/ch1/l3-newlayer.png'
+              img: 'img/ch1/l3-newlayer.jpg'
             },
             {
               title: '图层顺序决定谁在上面',
               desc: '图层面板里，越靠上的图层在画面里越靠前。在图层面板拖动图层可以调整顺序，或用快捷键Ctrl+] 上移一层、Ctrl+[ 下移一层，Ctrl+Shift+] 移到最顶层。',
               shortcut: 'Ctrl+] 上移 / Ctrl+[ 下移',
               tip: '选中图层后按Ctrl+J快速复制，做同款不同颜色的设计超好用！',
-              img: 'img/ch1/l3-order.png'
+              img: 'img/ch1/l3-order.jpg'
             },
             {
               title: '命名和分组——专业素养从现在开始',
               desc: '双击图层名称可以重命名，命名要有意义：如"红色背景"、"商品主图"、"价格文字"。多个相关图层可以Ctrl点击多选，再按Ctrl+G创建图层组（就像文件夹）。',
               shortcut: 'Ctrl+G 创建组',
               tip: '竞赛评委要看你的PSD文件，图层命名乱会扣分！现在养成习惯，比赛时自然就做好了',
-              img: 'img/ch1/l3-naming.png'
+              img: 'img/ch1/l3-naming.jpg'
             }
           ],
           tips: [
@@ -215,7 +215,7 @@ const CHAPTER1_DATA = {
           '新建图层"装饰"，画个简单的矩形装饰块',
           '选中文字相关图层，Ctrl+G打组，命名"文字组"'
         ],
-        resultImg: 'img/ch1/l3-practice-result.png',
+        resultImg: 'img/ch1/l3-practice-result.jpg',
         note: '这节练习重点是图层管理，不用纠结设计好不好看，图层清晰规范才是关键！'
       }
     },
@@ -240,21 +240,21 @@ const CHAPTER1_DATA = {
               desc: '按M选矩形选框，在画布拖动画出矩形选区（虚线框就是边界）。按Shift拖动画正方形；按Shift+M切换到椭圆选框工具，按Shift画正圆。',
               shortcut: 'M（Shift+M切换椭圆）',
               tip: '画好选区后，按住Space键拖动，可以移动整个选区位置（不影响内容）',
-              img: 'img/ch1/l4-marquee.png'
+              img: 'img/ch1/l4-marquee.jpg'
             },
             {
               title: '快速选择工具（W）——智能识别边缘',
               desc: '按W选快速选择工具，用画笔在物体上涂抹，PS自动识别边缘帮你选出形状。选多了按住Alt键涂抹可以减去。这个工具抠简单背景的商品非常好用！',
               shortcut: 'W',
               tip: '选好后，点属性栏"选择并遮住"可以精修边缘，抠出头发丝等细节',
-              img: 'img/ch1/l4-quickselect.png'
+              img: 'img/ch1/l4-quickselect.jpg'
             },
             {
               title: '加选/减选/反选',
               desc: '选好一块后按Shift再画——加选（两块合并）；按Alt画——减选（从现有选区减去）。Ctrl+Shift+I是反选，选中之前没被选中的区域——抠图时用完快速选择选背景，再反选就是选中商品！',
               shortcut: 'Ctrl+D 取消选区 / Ctrl+Shift+I 反选',
               tip: 'Ctrl+D取消选区，这个快捷键每天要用几十次，一定要背会！',
-              img: 'img/ch1/l4-addsubtract.png'
+              img: 'img/ch1/l4-addsubtract.jpg'
             }
           ],
           tips: [
@@ -283,7 +283,7 @@ const CHAPTER1_DATA = {
           '同样步骤做矩形标签：矩形选框→填黄色→打文字→加投影',
           '完成后删除背景层，Ctrl+Alt+Shift+S导出PNG-24带透明'
         ],
-        resultImg: 'img/ch1/l4-practice-result.png',
+        resultImg: 'img/ch1/l4-practice-result.jpg',
         note: '这两个标签做完可以保存起来，以后做主图时直接拖进去用！'
       }
     },
@@ -308,19 +308,19 @@ const CHAPTER1_DATA = {
               desc: '按T选文字工具，在画布上点一下就打字（点式文本，不换行）；按住拖出文本框再打字，会在框内自动换行（段落文本）。打完按Ctrl+Enter确认，或者切换到其他工具也会自动确认。',
               shortcut: 'T / Ctrl+Enter确认',
               tip: '电商设计多用点式文本，一行一个信息点清晰有力；长段说明才用段落文本',
-              img: 'img/ch1/l5-texttype.png'
+              img: 'img/ch1/l5-texttype.jpg'
             },
             {
               title: '改字体和大小——属性栏就在上面',
               desc: '选中文字图层（V键点文字），上方属性栏就显示字体、字号、颜色等设置。也可以开「字符」面板（菜单「窗口」→「字符」）来精细调字间距、行间距。',
               tip: '电商推荐字体：标题用思源黑体Bold、阿里巴巴普惠体；正文用思源黑体Regular。免费可商用！',
-              img: 'img/ch1/l5-textattr.png'
+              img: 'img/ch1/l5-textattr.jpg'
             },
             {
               title: '电商文字排版3个黄金法则',
               desc: '①大小对比：主要信息（价格、卖点）要大，次要信息（活动时间）要小，形成层级；②颜色对比：重要文字用高饱和度颜色（红、黄、橙），背景颜色深则用浅色字；③留白：文字周围要有空间，不要把字塞满画面。',
               tip: '价格数字通常比旁边的描述文字大2~3倍——这是电商主图最常见的排版手法',
-              img: 'img/ch1/l5-layout.png'
+              img: 'img/ch1/l5-layout.jpg'
             }
           ],
           keypoints: [
@@ -348,7 +348,7 @@ const CHAPTER1_DATA = {
           '选中所有文字图层，用移动工具属性栏的"水平居中对齐"让文字居中',
           '检查大小层级：品牌名<产品名<¥99，这个视觉比例要体现出来'
         ],
-        resultImg: 'img/ch1/l5-practice-result.png',
+        resultImg: 'img/ch1/l5-practice-result.jpg',
         note: '完成后保存PSD，这个文件第6课导出时还要用！'
       }
     },
@@ -372,20 +372,20 @@ const CHAPTER1_DATA = {
               title: '三种格式各司其职',
               desc: 'PSD：PS源文件，保留所有图层，只给自己留存用，不上传平台；JPG：有损压缩，文件小，适合主图、Banner等不需要透明背景的图；PNG：无损，支持透明背景，适合LOGO、贴纸、图标等需要透明的。',
               tip: '规律：需要透明背景→PNG；不需要透明背景→JPG（文件更小，上传更快）',
-              img: 'img/ch1/l6-formats.png'
+              img: 'img/ch1/l6-formats.jpg'
             },
             {
               title: '导出JPG的正确姿势',
               desc: '菜单「文件」→「导出」→「存储为Web所用格式（旧版）」，快捷键Ctrl+Alt+Shift+S。格式选JPEG，品质80左右（文件小且看不出质量差），检查右下角文件大小，确保在平台要求内。',
               shortcut: 'Ctrl+Alt+Shift+S',
               tip: '淘宝主图要求：JPG，文件大小≤3MB（建议品质60-80，既清晰又不超大）',
-              img: 'img/ch1/l6-exportjpg.png'
+              img: 'img/ch1/l6-exportjpg.jpg'
             },
             {
               title: '导出透明PNG',
               desc: '在图层面板关掉背景图层的眼睛（隐藏背景），或删掉背景图层，然后Ctrl+Alt+Shift+S，格式选PNG-24，勾选"透明度"选项，存储即可。',
               tip: 'PNG文件比JPG大得多，只在真正需要透明背景时才用，其他情况一律JPG',
-              img: 'img/ch1/l6-exportpng.png'
+              img: 'img/ch1/l6-exportpng.jpg'
             }
           ],
           tips: [
@@ -403,18 +403,18 @@ const CHAPTER1_DATA = {
         requirements: [
           '导出JPG主图：800×800px，品质80，文件大小<500KB',
           '导出品牌LOGO部分为PNG-24透明背景',
-          '文件命名规范：主图-800×800.png / logo-transparent.png'
+          '文件命名规范：主图-800×800.jpg / logo-transparent.jpg'
         ],
         hints: [
           '打开第5课的PSD文件',
           '按Ctrl+Alt+Shift+S打开"存储为Web所用格式"对话框',
           '格式选JPEG，品质80，检查右下角文件大小（要小于500KB）',
-          '点"存储"，保存路径选好，命名"主图-800×800.png"',
+          '点"存储"，保存路径选好，命名"主图-800×800.jpg"',
           '回到PS，在图层面板把除LOGO文字图层以外的所有图层眼睛关掉（隐藏）',
-          '再次Ctrl+Alt+Shift+S，格式选PNG-24，勾选"透明度"，保存"logo-transparent.png"',
+          '再次Ctrl+Alt+Shift+S，格式选PNG-24，勾选"透明度"，保存"logo-transparent.jpg"',
           '最后记得Ctrl+Z撤销隐藏操作，恢复PSD文件，重新保存PSD'
         ],
-        resultImg: 'img/ch1/l6-practice-result.png',
+        resultImg: 'img/ch1/l6-practice-result.jpg',
         note: '以后工作流程固定为：做设计→保存PSD→导出成品图。PSD和成品图都要留存！'
       }
     }
