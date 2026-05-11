@@ -24,7 +24,6 @@ const SidebarComponent = {
       const isActive = chapter.id === activeChapterId;
       const chapterProgress = App.getChapterProgress(chapter.id);
       const isQuizPassed = App.isQuizPassed(chapter.id);
-      const shouldShow = isActive || isOpen;
 
       html += `
         <div class="sidebar-chapter">
@@ -41,14 +40,25 @@ const SidebarComponent = {
       chapter.lessons.forEach(lesson => {
         const isCompleted = App.isLessonCompleted(lesson.id);
         const isLessonActive = lesson.id === activeLessonId;
-        const canAccess = isUnlocked && isOpen;
+        // 课时可访问：章节已解锁 + 章节已开放 + 课时本身已开放
+        const lessonOpen = App.isLessonOpen(lesson.id, chapter.id);
+        const canAccess = isUnlocked && isOpen && lessonOpen;
+
+        let clickHandler;
+        if (canAccess) {
+          clickHandler = `SidebarComponent.goLesson('${chapter.id}', '${lesson.id}')`;
+        } else if (!isUnlocked || !isOpen) {
+          clickHandler = `Toast.warning('请先解锁本章节')`;
+        } else {
+          clickHandler = `Toast.warning('该课时暂未开放')`;
+        }
 
         html += `
           <div class="sidebar-lesson ${isLessonActive ? 'active' : ''} ${!canAccess ? 'locked' : ''} ${isCompleted ? 'completed' : ''}"
-               onclick="${canAccess ? `SidebarComponent.goLesson('${chapter.id}', '${lesson.id}')` : 'Toast.warning(\"请先解锁本章节\")'}"
+               onclick="${clickHandler}"
                title="${lesson.title}">
             <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lesson.title}</span>
-            <span class="lesson-check">${isCompleted ? '✅' : ''}</span>
+            <span class="lesson-check">${isCompleted ? '✅' : (!lessonOpen && isOpen ? '🔒' : '')}</span>
           </div>`;
       });
 

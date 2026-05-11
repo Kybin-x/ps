@@ -53,6 +53,25 @@ const DB = {
     return { data, error };
   },
 
+  // 课时访问控制（lesson_access 表）
+  async getLessonAccess() {
+    const { data, error } = await db.from('lesson_access').select('*');
+    return { data: data || [], error };
+  },
+  async setLessonAccess(lessonId, chapterId, isOpen) {
+    const { data, error } = await db.from('lesson_access').upsert(
+      { lesson_id: lessonId, chapter_id: chapterId, is_open: isOpen },
+      { onConflict: 'lesson_id' }
+    );
+    return { data, error };
+  },
+  // 批量设置章节下所有课时的开关状态
+  async setChapterLessonsAccess(chapterId, lessonIds, isOpen) {
+    const rows = lessonIds.map(id => ({ lesson_id: id, chapter_id: chapterId, is_open: isOpen }));
+    const { data, error } = await db.from('lesson_access').upsert(rows, { onConflict: 'lesson_id' });
+    return { data, error };
+  },
+
   // 进度相关
   async getUserProgress(userId) {
     const { data, error } = await db.from('progress').select('*').eq('user_id', userId);

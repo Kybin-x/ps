@@ -334,36 +334,111 @@ async function handleAddStudent() {
 // ---- 章节管理 ----
 async function renderChaptersTab(content) {
   const { data: dbChapters } = await DB.getChapters();
+  const { data: lessonAccess } = await DB.getLessonAccess();
   const chapters = App.courseData;
+  const icons = ['🎨','🖼️','📦','🎉','✨'];
+
+  const getLessonOpen = (lessonId) => {
+    const rec = (lessonAccess || []).find(r => r.lesson_id === lessonId);
+    return rec ? rec.is_open !== false : true;
+  };
 
   content.innerHTML = `
     <div class="admin-section-title">章节管理</div>
-    <div class="admin-section-desc">控制各章节对学员的开放状态</div>
-    <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="admin-section-desc">
+      点击章节可展开查看并单独控制每节课时的开放状态；章节总开关关闭时，所有课时对学员不可见。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
       ${chapters.map((ch, idx) => {
         const dbCh = (dbChapters || []).find(d => d.chapter_id === ch.id);
-        const isOpen = dbCh ? dbCh.is_open !== false : true;
+        const chOpen = dbCh ? dbCh.is_open !== false : true;
+        const openCount = ch.lessons.filter(l => getLessonOpen(l.id)).length;
+
         return `
-          <div class="card" style="display:flex;align-items:center;gap:20px">
-            <div style="font-size:32px">${['🎨','🖼️','📦','🎉','✨'][idx]}</div>
-            <div style="flex:1">
-              <div style="font-size:15px;font-weight:700">第${idx+1}章 · ${ch.title}</div>
-              <div style="font-size:12px;color:var(--text3);margin-top:4px">${ch.lessons.length} 课时 · ${ch.duration}</div>
+          <div class="chapter-access-card" id="chcard-${ch.id}" style="
+            background:var(--card); border:1.5px solid var(--border);
+            border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-card);">
+
+            <!-- 章节头部行 -->
+            <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer"
+                 onclick="toggleChapterCard('${ch.id}')">
+              <div style="font-size:28px;flex-shrink:0">${icons[idx]}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:15px;font-weight:700;color:var(--text)">
+                  第${idx+1}章 · ${ch.title}
+                </div>
+                <div style="font-size:12px;color:var(--text3);margin-top:3px">
+                  共 ${ch.lessons.length} 课时 &nbsp;·&nbsp;
+                  <span id="open-count-${ch.id}" style="color:${chOpen ? 'var(--success)' : 'var(--red)'}">
+                    ${chOpen ? `${openCount}/${ch.lessons.length} 课时已开放` : '章节已全部关闭'}
+                  </span>
+                </div>
+              </div>
+              <!-- 章节总开关 -->
+              <div style="display:flex;align-items:center;gap:10px;flex-shrink:0" onclick="event.stopPropagation()">
+                <span style="font-size:12px;color:var(--text3)">整章</span>
+                <label class="toggle">
+                  <input type="checkbox" id="chtoggle-${ch.id}" ${chOpen ? 'checked' : ''}
+                    onchange="toggleChapter('${ch.id}', this.checked, ${JSON.stringify(ch.lessons.map(l=>l.id))})" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <!-- 展开箭头 -->
+              <div id="chcarrow-${ch.id}" style="font-size:12px;color:var(--text3);transition:transform 0.2s;flex-shrink:0">▶</div>
             </div>
-            <div style="display:flex;align-items:center;gap:12px">
-              <span style="font-size:13px;color:${isOpen ? 'var(--success)' : 'var(--red)'}">${isOpen ? '已开放' : '已关闭'}</span>
-              <label class="toggle">
-                <input type="checkbox" ${isOpen ? 'checked' : ''} onchange="toggleChapter('${ch.id}', this.checked)" />
-                <span class="toggle-slider"></span>
-              </label>
+
+            <!-- 课时列表（默认折叠） -->
+            <div id="chbody-${ch.id}" style="display:none;border-top:1px solid var(--border)">
+              <!-- 批量操作行 -->
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--bg2)">
+                <span style="font-size:12px;color:var(--text3);flex:1">批量操作：</span>
+                <button class="btn btn-sm btn-outline" style="border-radius:6px;font-size:12px"
+                  onclick="batchSetLessons('${ch.id}', ${JSON.stringify(ch.lessons.map(l=>l.id))}, true)">全部开放</button>
+                <button class="btn btn-sm btn-danger" style="border-radius:6px;font-size:12px"
+                  onclick="batchSetLessons('${ch.id}', ${JSON.stringify(ch.lessons.map(l=>l.id))}, false)">全部关闭</button>
+              </div>
+              <!-- 课时列表 -->
+              ${ch.lessons.map((lesson, li) => {
+                const lOpen = getLessonOpen(lesson.id);
+                return `
+                  <div style="display:flex;align-items:center;gap:14px;padding:11px 20px 11px 56px;
+                    border-bottom:1px solid var(--border);transition:background 0.15s"
+                    onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
+                    <div style="width:20px;height:20px;border-radius:50%;background:var(--gradient);
+                      color:#fff;display:flex;align-items:center;justify-content:center;
+                      font-size:10px;font-weight:700;flex-shrink:0">${li+1}</div>
+                    <div style="flex:1;font-size:13px;color:var(--text)">${lesson.title}</div>
+                    <div style="font-size:12px;color:var(--text3);margin-right:8px">${lesson.duration || ''}</div>
+                    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                      <span id="lstatus-${lesson.id}" style="font-size:11px;color:${lOpen ? 'var(--success)' : 'var(--red)'}">
+                        ${lOpen ? '开放' : '关闭'}
+                      </span>
+                      <label class="toggle" style="width:36px;height:20px">
+                        <input type="checkbox" id="ltoggle-${lesson.id}" ${lOpen ? 'checked' : ''}
+                          onchange="toggleLesson('${lesson.id}', '${ch.id}', this.checked)" />
+                        <span class="toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>`;
+              }).join('')}
             </div>
           </div>`;
       }).join('')}
     </div>`;
 }
 
-async function toggleChapter(chapterId, isOpen) {
-  // 先检查是否在DB中有记录，没有则先插入
+// 展开/折叠章节卡片
+function toggleChapterCard(chapterId) {
+  const body = document.getElementById(`chbody-${chapterId}`);
+  const arrow = document.getElementById(`chcarrow-${chapterId}`);
+  if (!body) return;
+  const isOpen = body.style.display === 'none';
+  body.style.display = isOpen ? 'block' : 'none';
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(90deg)' : '';
+}
+
+// 切换章节总开关（同时影响所有课时的显示，但不修改课时单独开关记录）
+async function toggleChapter(chapterId, isOpen, lessonIds) {
   const { data: existing } = await DB.getChapters();
   const dbCh = (existing || []).find(d => d.chapter_id === chapterId);
 
@@ -371,19 +446,96 @@ async function toggleChapter(chapterId, isOpen) {
   if (dbCh) {
     ({ error } = await DB.updateChapter(dbCh.id, { is_open: isOpen }));
   } else {
-    // 插入新记录
     const { error: insertError } = await db.from('chapters').insert({ chapter_id: chapterId, is_open: isOpen, order_num: 0 });
     error = insertError;
   }
 
   if (error) { Toast.error('操作失败'); return; }
 
-  // 更新本地
+  // 更新本地状态
   const localCh = App.chapters.find(c => c.chapter_id === chapterId);
   if (localCh) localCh.is_open = isOpen;
   else App.chapters.push({ chapter_id: chapterId, is_open: isOpen });
 
-  Toast.success(isOpen ? '章节已开放' : '章节已关闭');
+  // 更新UI
+  const countEl = document.getElementById(`open-count-${chapterId}`);
+  if (countEl) {
+    const { data: la } = await DB.getLessonAccess();
+    const openCount = (lessonIds || []).filter(id => {
+      const rec = (la || []).find(r => r.lesson_id === id);
+      return rec ? rec.is_open !== false : true;
+    }).length;
+    countEl.textContent = isOpen ? `${openCount}/${(lessonIds||[]).length} 课时已开放` : '章节已全部关闭';
+    countEl.style.color = isOpen ? 'var(--success)' : 'var(--red)';
+  }
+
+  Toast.success(isOpen ? `第章节已整体开放` : `章节已整体关闭`);
+}
+
+// 切换单个课时开关
+async function toggleLesson(lessonId, chapterId, isOpen) {
+  const { error } = await DB.setLessonAccess(lessonId, chapterId, isOpen);
+  if (error) { Toast.error('操作失败'); return; }
+
+  // 更新本地 lessonAccess
+  const rec = App.lessonAccess.find(r => r.lesson_id === lessonId);
+  if (rec) rec.is_open = isOpen;
+  else App.lessonAccess.push({ lesson_id: lessonId, chapter_id: chapterId, is_open: isOpen });
+
+  // 更新状态文字
+  const statusEl = document.getElementById(`lstatus-${lessonId}`);
+  if (statusEl) {
+    statusEl.textContent = isOpen ? '开放' : '关闭';
+    statusEl.style.color = isOpen ? 'var(--success)' : 'var(--red)';
+  }
+
+  // 更新章节统计数
+  const ch = App.courseData.find(c => c.id === chapterId);
+  if (ch) {
+    const openCount = ch.lessons.filter(l => {
+      const r = App.lessonAccess.find(x => x.lesson_id === l.id);
+      return r ? r.is_open !== false : true;
+    }).length;
+    const countEl = document.getElementById(`open-count-${chapterId}`);
+    if (countEl && App.isChapterOpen(chapterId)) {
+      countEl.textContent = `${openCount}/${ch.lessons.length} 课时已开放`;
+    }
+  }
+
+  Toast.success(isOpen ? '课时已开放' : '课时已关闭');
+}
+
+// 批量设置章节内所有课时
+async function batchSetLessons(chapterId, lessonIds, isOpen) {
+  const { error } = await DB.setChapterLessonsAccess(chapterId, lessonIds, isOpen);
+  if (error) { Toast.error('批量操作失败'); return; }
+
+  // 更新本地状态
+  lessonIds.forEach(id => {
+    const rec = App.lessonAccess.find(r => r.lesson_id === id);
+    if (rec) rec.is_open = isOpen;
+    else App.lessonAccess.push({ lesson_id: id, chapter_id: chapterId, is_open: isOpen });
+  });
+
+  // 更新所有课时UI
+  lessonIds.forEach(id => {
+    const toggle = document.getElementById(`ltoggle-${id}`);
+    const status = document.getElementById(`lstatus-${id}`);
+    if (toggle) toggle.checked = isOpen;
+    if (status) {
+      status.textContent = isOpen ? '开放' : '关闭';
+      status.style.color = isOpen ? 'var(--success)' : 'var(--red)';
+    }
+  });
+
+  // 更新章节统计
+  const countEl = document.getElementById(`open-count-${chapterId}`);
+  if (countEl && App.isChapterOpen(chapterId)) {
+    const openCount = isOpen ? lessonIds.length : 0;
+    countEl.textContent = `${openCount}/${lessonIds.length} 课时已开放`;
+  }
+
+  Toast.success(isOpen ? `已开放全部 ${lessonIds.length} 课时` : `已关闭全部 ${lessonIds.length} 课时`);
 }
 
 // ---- 系统设置 ----

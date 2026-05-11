@@ -8,6 +8,7 @@ const App = {
   progress: [],       // 用户进度列表
   quizResults: [],    // 测验结果列表
   chapters: [],       // 章节配置（DB）
+  lessonAccess: [],   // 课时访问控制（DB）
   settings: {},       // 全局设置
 
   // 所有课程数据（来自各章节JS文件）
@@ -57,6 +58,17 @@ const App = {
     const dbChapter = this.chapters.find(c => c.chapter_id === chapterId);
     if (!dbChapter) return true; // 默认开放
     return dbChapter.is_open !== false;
+  },
+
+  // 检查单个课时是否被管理员开放（lesson_access 表控制）
+  // 若无记录则默认开放；若章节本身关闭，课时也关闭
+  isLessonOpen(lessonId, chapterId) {
+    // 先检查章节总开关
+    if (!this.isChapterOpen(chapterId)) return false;
+    // 再检查课时单独开关
+    const rec = this.lessonAccess.find(r => r.lesson_id === lessonId);
+    if (!rec) return true; // 无记录 = 默认开放
+    return rec.is_open !== false;
   },
 
   // 计算总进度
@@ -207,11 +219,12 @@ async function loadUserData() {
   if (!App.user) return;
 
   try {
-    const [progressRes, quizRes, settingsRes, chaptersRes] = await Promise.all([
+    const [progressRes, quizRes, settingsRes, chaptersRes, lessonAccessRes] = await Promise.all([
       DB.getUserProgress(App.user.id),
       DB.getAllQuizResults(),
       DB.getSettings(),
-      DB.getChapters()
+      DB.getChapters(),
+      DB.getLessonAccess()
     ]);
 
     App.progress = progressRes.data || [];
@@ -219,6 +232,7 @@ async function loadUserData() {
     App.quizResults = (quizRes.data || []).filter(r => r.user_id === App.user.id);
     App.settings = settingsRes.data || {};
     App.chapters = chaptersRes.data || [];
+    App.lessonAccess = lessonAccessRes.data || [];
   } catch (e) {
     console.error('加载用户数据失败', e);
   }
